@@ -1,0 +1,1 @@
+(infix[i] >='a' && infix[i] <='z') || (infix[i]>='A' && infix[i]<='Z') || (infix[i]>='0' && infix[i]<='9')
