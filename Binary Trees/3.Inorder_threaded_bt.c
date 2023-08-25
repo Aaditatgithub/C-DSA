@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 
 typedef struct node {
 
@@ -8,14 +9,13 @@ typedef struct node {
     bool lbit;
     bool rbit;
 
-}node;
+} node;
 
-node* insert(node* root, int key)
-{
+node* insert(node* root, int key) {
+
     node* current = root;
     node* parent = NULL;
     while (current != NULL) {
-
         if (key == (current->data)) {
             printf("Duplicate value !\n");
             return root;
@@ -35,7 +35,7 @@ node* insert(node* root, int key)
         }
     }
 
-    node* temp = new node;
+    node* temp = (node*)malloc(sizeof(node));
     temp->data = key;
     temp->lbit = true;
     temp->rbit = true;
@@ -57,12 +57,10 @@ node* insert(node* root, int key)
         parent->rbit = false;
         parent->right = temp;
     }
-
     return root;
 }
 
-node* inSucc( node* current)
-{
+node* inSucc(node* current) {
     if (current->rbit == true)
         return current->right;
 
@@ -74,7 +72,7 @@ node* inSucc( node* current)
 }
 
 // For returning inorder successor using rbit 
- node* inorderSuccessor( node* current)
+ node* inorderSuccessor(node* current)
 {
     // If rbit is set, we can quickly find
     if (current->rbit == true)
@@ -88,13 +86,12 @@ node* inSucc( node* current)
 }
 
 // Print the threaded tree
-void inorder( node* root)
+void inorder(node* root)
 {
     if (root == NULL)
         printf("Tree is empty");
-
     // Taking leftmost node
-     node* current = root;
+    node* current = root;
     while (current->lbit == false)
         current = current->left;
 
@@ -104,8 +101,8 @@ void inorder( node* root)
     }
 }
 
- node* inPred( node* current)
-{
+node* inPred( node* current) {
+
     if (current->lbit == true)
         return current->left;
 
@@ -113,11 +110,12 @@ void inorder( node* root)
     while (current->rbit == false)
         current = current->right;
     return current;
+
 }
 
 // Here 'parent ' is a pointer referring to the parent node 
 // and 'current' is a pointer to the current node.
- node* case1( node* root,  node* parent,  node* current)
+node* case1(node* root,  node* parent,  node* current)
 {
     // If root node has to be deleted
     if (parent == NULL)
@@ -186,20 +184,18 @@ void inorder( node* root)
 
 // Here 'parent' is a pointer referring to the parent node 
 // and 'current' is a pointer to the current node
- node* case3( node* root,  node* parent,  node* current)
-{
+node* case3( node* root,  node* parent,  node* current) {
+    
     // Find the inorder successor 
-     node* parsucc = current;
-     node* succ = current->right;
+    node* parsucc = current;
+    node* succ = current->right;
 
     // Find the leftmost child 
     while (succ->lbit == false) {
         parsucc = succ;
         succ = succ->left;
     }
-
     current->data = succ->data;
-
     if (succ->lbit == true && succ->rbit == true)
         root = case1(root, parsucc, succ);
     else
@@ -211,9 +207,9 @@ void inorder( node* root)
 // For deleting the value from threaded BST with the given root 
 // and returning a new root of BST
 
- node* dThreadedBST( node* root, int value)
-{
-     node* parent = NULL, * current = root;
+node* dThreadedBST(node* root, int value) {
+
+    node *parent = NULL, *current = root;
 
     // Set true if value is found
     int found = 0;
@@ -241,7 +237,6 @@ void inorder( node* root)
 
     if (found == 0)
         printf("The value not present in tree\n");
-
     else if (current->lbit == false && current->rbit == false)
         root = case3(root, parent, current);
     else if (current->lbit == false)
@@ -256,11 +251,11 @@ void inorder( node* root)
 
 int main() {
 
-
-     node* root = NULL;
+    node* root = NULL;
     int choice, data;
 
     do {
+
         printf("\nMenu:\n");
         printf("1. Insert\n");
         printf("2. Inorder Traversal\n");
@@ -290,7 +285,9 @@ int main() {
             break;
         default:
             printf("Invalid choice! Please choose again.\n");
+        
         }
+
     } while (choice != 4);
 
     return 0;
