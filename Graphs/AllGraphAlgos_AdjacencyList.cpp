@@ -5,7 +5,7 @@
 typedef struct node {
     int data, weight;
     struct node* next;
-} node;
+}node;
 
 node** createlist(int vertices) {
     node** newlist = (node**)malloc(sizeof(node*) * vertices);
@@ -71,7 +71,7 @@ void BFS(node** list, int src, int vertices){
     visited[src] = 1;
 
     while(f != r){
-        node* temp = list[f+1];
+        node* temp = list[++f];
         while(temp){
             if(visited[temp->data] != 1){
                 printf("%d ", temp->data);
@@ -80,7 +80,6 @@ void BFS(node** list, int src, int vertices){
             }
             temp = temp->next;
         }
-        queue[++f];
     }    
 }
 
@@ -111,6 +110,7 @@ void Prims(node** list, int vertices){
     int* mst = (int*)calloc(vertices,sizeof(key));
     int* parent = (int*)malloc(sizeof(key)*vertices);
 
+    //init
     for(int i = 0; i < vertices; i++){
         key[i] = INT_MAX;
         parent[i] = -1;
@@ -129,6 +129,7 @@ void Prims(node** list, int vertices){
                 mini = key[i];
             }
         } 
+        
         // nearest node added to mst
         mst[u] = 1;
 
@@ -174,12 +175,13 @@ void kruskal(node** list, int vertices){
         int minedge = INT_MAX;
         int u, v;               // nodes of min edge
 
+        // find parents for the pair, if not equal assign
         for(int i = 0; i < vertices- 1; i++){
             node* temp = list[i];
             while(temp){
                 if(temp->weight < minedge){
                     int rootU = findparent(parent, i);
-                    int rootV = findparent(parent, temp->data);    
+                    int rootV = findparent(parent, temp->data);
                     if(rootU != rootV){
                         minedge = temp->weight;
                         u = i;
@@ -192,7 +194,8 @@ void kruskal(node** list, int vertices){
 
         int rootU = findparent(parent, u);
         int rootV = findparent(parent, v);
-
+        
+        // not equal parents, add to tree
         if(rootU != rootV){
             unionsets(parent, u, v);
             printf("%d - %d, %d\n",u,v,minedge);
@@ -257,10 +260,11 @@ int main() {
 
     printgraph(list, vertices);
     printf("BFS :: ");
-    BFS(list,0,vertices);
+    BFS(list,1,vertices);
     printf("\nDFS :: ");
     DFS(list,0,vertices);
     Prims(list,5);
-    dijkstras(list,0,5);
+    dijkstras(list,0,vertices);
+    kruskal(list,vertices);
     return 0;
 }
