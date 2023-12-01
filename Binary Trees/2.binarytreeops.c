@@ -1,23 +1,18 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
 
-
-typedef struct node
-{
+typedef struct node {
     int data;
     struct node *left  ;
     struct node *right ;   
-
 }node;
 
 typedef struct queue{
-
     node** arr;
     int size;
     int front, rare;
-
 }queue;
 
 void enqueue(queue* q, node* root){
@@ -34,7 +29,6 @@ int dequeue(queue*q){
 }
 
 node* SearchNode(node *root, int parent_data){
-
     queue* q = (queue*)malloc(sizeof(queue));
     q->arr = (node**)malloc(sizeof(node*)*20);
     q->size = 20;
@@ -64,10 +58,10 @@ node* create(node* root, int data){
     x->left = x->right = NULL;
     root = x;
     return root;
+
 }
 
 node* insert (node *root, int parent, int data, char pos) {
-
         node *x = (node*) malloc (sizeof(node));
         x->data = data;
         x->left = x->right = NULL;
@@ -85,8 +79,53 @@ node* insert (node *root, int parent, int data, char pos) {
     return root;
 }
 
-void LevelOrderTraversal(node* root){
+int maxfunc(int a, int b){
+    if(a>b)
+        return a;
+    else 
+        return b;
+}
 
+int maxHeight(node* root){
+    //base case
+    if (!root){
+        return 0;
+    }
+    //recursive case
+    int leftDepth = maxHeight(root->left);
+    int rightDepth = maxHeight(root->right);
+
+    return maxfunc(leftDepth, rightDepth) + 1;
+}
+
+int findTreeHeight(node* root) {
+    if (root == NULL) {
+        return 0;
+    }
+    int height = 0;
+    node* queue[100];  // Initialize a queue for level-order traversal
+    int front = -1, rear = -1;
+
+    queue[++rear] = root; // Enqueue the root
+
+    while (front != rear) { // Queue is not empty
+        int nodesInCurrentLevel = rear - front;
+        while (nodesInCurrentLevel > 0) {
+            node* current = queue[++front]; // Dequeue a node
+            if (current->left) {
+                queue[++rear] = current->left; // Enqueue the left child
+            }
+            if (current->right) {
+                queue[++rear] = current->right; // Enqueue the right child
+            }
+            nodesInCurrentLevel--;
+        }
+        height++; // Move to the next level
+    }
+    return height;
+}
+
+void LevelOrderTraversal(node* root){
     queue* q = (queue*)malloc(sizeof(queue));
     q->arr = (node**)malloc(sizeof(node*)*20);
     q->size = 20;
@@ -103,30 +142,9 @@ void LevelOrderTraversal(node* root){
     }
 }
 
-int maxfunc(int a, int b){
-    if(a>b)
-        return a;
-    else 
-        return b;
-}
-
-int maxHeight(node* root){
-
-    //base case
-    if (root == NULL){
-        return 0;
-    }
-    //recursive case
-    int leftDepth = maxHeight(root->left);
-    int rightDepth = maxHeight(root->right);
-
-    return maxfunc(leftDepth, rightDepth)+1;
-}
 
 void MirrorImage(node *root){
-
-    if (root != NULL)
-    {  
+    if (root != NULL) {  
         node* temp;
         MirrorImage(root->left);      
         MirrorImage(root->right);     
@@ -136,13 +154,38 @@ void MirrorImage(node *root){
     }
 }
 
-bool isMirror(node* leftSubtree, node* rightSubtree) {
+void mirrorImage(node* root) {
+    if (root == NULL) {
+        return;
+    }
 
+    node* queue[100];  // Initialize a queue for level-order traversal
+    int front = -1, rear = -1;
+
+    queue[++rear] = root; // Enqueue the root
+
+    while (front != rear) { // Queue is not empty
+        node* current = queue[++front]; // Dequeue a node
+
+        // Swap the left and right subtrees
+        node* temp = current->left;
+        current->left = current->right;
+        current->right = temp;
+
+        if (current->left) {
+            queue[++rear] = current->left; // Enqueue the left child
+        }
+        if (current->right) {
+            queue[++rear] = current->right; // Enqueue the right child
+        }
+    }
+}
+
+bool isMirror(node* leftSubtree, node* rightSubtree) {
     if (leftSubtree == NULL && rightSubtree == NULL)
         return true;
     if (leftSubtree == NULL || rightSubtree == NULL)
         return false;
-
     return (leftSubtree->data == rightSubtree->data) && isMirror(leftSubtree->left, rightSubtree->right) && 
             isMirror(leftSubtree->right, rightSubtree->left);
 }
@@ -150,7 +193,6 @@ bool isMirror(node* leftSubtree, node* rightSubtree) {
 bool isSymmetric(node* root) {
     if (root == NULL)
         return true;
-
     return isMirror(root->left, root->right);
 }
 
@@ -170,18 +212,30 @@ bool isBST(node* root) {
     return isBSTUntil(root, INT_MIN, INT_MAX);
 }
 
-void printLeafNodes(node* root){
-    
-    if(root!=NULL){
-        if(!(root->left) && !(root->right)){
-            printf("%d ",root->data);
-            return ;
-        }
-        if(root->left)
-            printLeafNodes(root->left);
-        if(root->right)
-            printLeafNodes(root->right);
+void printLeafnodes(node* root) {
+    if (root == NULL) {
         return;
+    }
+
+    node* queue[100];  // Initialize a queue for level-order traversal
+    int front = -1, rear = -1;
+
+    queue[++rear] = root; // Enqueue the root
+
+    while (front != rear) { // Queue is not empty
+        node* current = queue[++front]; // Dequeue a node
+
+        // Check if the current node is a leaf node
+        if (current->left == NULL && current->right == NULL) {
+            printf("%d ", current->data);
+        }
+
+        if (current->left) {
+            queue[++rear] = current->left; // Enqueue the left child
+        }
+        if (current->right) {
+            queue[++rear] = current->right; // Enqueue the right child
+        }
     }
 }
 
@@ -195,7 +249,6 @@ int main() {
     int data;
 
     do {
-
         printf("What do you want to do:\n 1. Create Tree\n 2. Insert node\n 3. LevelOrder Traversal\n 4. Height \n 5. Mirror Image \n");
         printf(" 6. Check Symmetricity \n 7. Check BST \n 8. Print leaf nodes \n");
         scanf("%d", &n);
@@ -220,7 +273,7 @@ int main() {
                 LevelOrderTraversal(root);
                 break;
             case 4:
-                printf("The depth of the tree is : %d\n",maxHeight(root));
+                printf("The depth of the tree is : %d\n",findTreeHeight(root));
                 break;
             case 5:
                 printf("The Mirror Image of the Tree is \n");
@@ -243,10 +296,11 @@ int main() {
                 break;
             case 8:
                 printf("\nThe Leaf Nodes are : ");
-                printLeafNodes(root);
+                printLeafnodes(root);
                 printf("\n");
                 break;
         }   
+        
         printf("\nDo you want to continue? (1 for Yes, 0 for No): ");
         scanf("%d", &choice);
 
